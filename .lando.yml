@@ -1,0 +1,4 @@
+name: wordpress-tester
+recipe: platformsh
+config:
+  id: yjgwpzqdz7sou
