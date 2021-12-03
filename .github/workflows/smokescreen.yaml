@@ -24,7 +24,7 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
       - name: Did psh finish?
-        if: steps.wait4psh.outputs.status == 'success'
+        if: ${{ success() }}
         run: |
           echo "Did psh pr env deploy?!"
           echo "I'm guessing so because these messages are happening!"
