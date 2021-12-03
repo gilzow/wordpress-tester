@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Wait for platformsh check to succeed
+        id: wait4psh
         uses: lewagon/wait-on-check-action@v1.0.0
         with:
           ref: ${{ github.ref }}
@@ -23,7 +24,8 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
       - name: Did psh finish?
-        if: {{ success() }}
+        if: steps.wait4psh.outputs.status == 'success'
         run: |
           echo "Did psh pr env deploy?!"
+          echo "I'm guessing so because these messages are happening!"
 
