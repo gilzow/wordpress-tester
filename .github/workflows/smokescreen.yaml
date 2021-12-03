@@ -16,5 +16,8 @@ jobs:
           running-workflow-name: 'platformsh'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           wait-interval: 10
+      - name: Did psh finish?
+        if: {{ success() }}
         run: |
-          echo "Did the platformsh step complete?"
+          echo "Did psh pr env deploy?!"
+
