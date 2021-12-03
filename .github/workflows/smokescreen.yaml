@@ -1,0 +1,20 @@
+name: "smoke test"
+on:
+  workflow_run:
+    workflows: ["platformsh"]
+    types:
+      - completed
+jobs:
+  test-pr-env:
+    name: Test the PR environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for platformsh check to succeed
+        uses: lewagon/wait-on-check-action@v1.0.0
+        with:
+          ref: ${{ github.ref }}
+          running-workflow-name: 'platformsh'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+        run: |
+          echo "Did the platformsh step complete?"
