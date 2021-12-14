@@ -81,6 +81,11 @@ source:
         set -e
         echo "beginning auto-update check"
         updateBranch="auto-updates"
+        echo "how about just git status?"
+        git status
+        echo "What about branches?"
+        BRANCHES=$(git branch -r)
+        echo "${BRANCHES}"
         echo "here are all the remotes:"
         git remote -v
         #get the name of our remote. we may have more than one so grab the first
