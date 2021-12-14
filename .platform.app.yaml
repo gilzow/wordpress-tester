@@ -79,16 +79,21 @@ source:
       command: |
         #!/usr/bin/env bash
         set -e
+        echo "beginning auto-update check"
         updateBranch="auto-updates"
         #get the name of our remote. we may have more than one so grab the first
+        echo "getting the names of the remotes"
         remote=$(git remote | head -n 1)
         #make sure we're up-to-date
+        echo "Fetching all"
         git fetch --all
 
         #do we have the branch remotely?
+        echo "checking to see if we have the branch remotely"
         branchExistsRemote=$(git ls-remote --exit-code "${remote}" "${updateBranch}")
 
         # does our branch exist locally?
+        echo "checking to see if we have the branch locally"
         branchExistsLocally=$(git show-ref --quiet refs/heads/auto-updates)
 
         #if it doesn't exist locally, then we know we'll need a new local branch
@@ -100,14 +105,17 @@ source:
           getBranchFromRemote='yes'
         fi
 
+        echo "checking out the branch"
         git checkout "${doBranch:+ -b }${updateBranch}${getBranchFromRemote:+ ${remote}/${updateBranch}}"
 
         #now that we're on the branch, if we already had it locally AND we have it remotely, let's make sure it is up-to-date
         if (( 0 == branchExistsLocally  && 0 == branchExistsRemote )); then
+          echo "the branch was available locally and remotely so making sure we are up-to-date"
           git pull --no-rebase
         fi
 
         #let's get our updates
+        echo "running composer update"
         composer update
         updates=$(git status --porcelain=1)
 
