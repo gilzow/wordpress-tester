@@ -81,12 +81,18 @@ source:
         set -e
         echo "beginning auto-update check"
         updateBranch="auto-updates"
+        echo "here are all the remotes:"
+        git remote -v
         #get the name of our remote. we may have more than one so grab the first
-        echo "getting the names of the remotes"
+        echo "getting the name of the remote"
         remote=$(git remote | head -n 1)
+        printf "The name of our remote is %s\n" "${remote}"
         #make sure we're up-to-date
         echo "Fetching all"
         git fetch --all
+
+        echo "what about just git ls-remote on our remote?"
+        git ls-remote "${remote}"
 
         #do we have the branch remotely?
         echo "checking to see if we have the branch remotely"
