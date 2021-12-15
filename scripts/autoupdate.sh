@@ -6,7 +6,8 @@ set -e
 # color used for general working notices (ie "installing foobar..."
 CWORKING='\033[34;1m'
 #The 'color' we use to reset the colors
-CRESET='\033[0m'
+#CRESET='\033[0m'
+CRESET=$(tput sgr0 -T "${TERM}")
 #bold, duh
 CBOLD='\033[1;96m'
 #color we use for informational messages
@@ -16,7 +17,7 @@ CWARN='\033[1;31m'
 # not really sure if we'll need this or not since
 #updateBranch="auto-updates"
 updateBranch="add-source-ops"
-printf "%bBeginning auto-update process... %b" "${CWORKING}" "${CRESET}"
+printf "%bBeginning auto-update process... %b\n" "${CWORKING}" "${CRESET}"
 
 #if we dont have the PLATFORMSH_CLI_TOKEN available, then there's not much we can do
 if [[ -z ${PLATFORMSH_CLI_TOKEN+x} ]]; then
@@ -27,8 +28,7 @@ if [[ -z ${PLATFORMSH_CLI_TOKEN+x} ]]; then
 fi
 
 printf "%bDo we have the psh cli tool installed?%b" "${CWORKING}" "${CRESET}"
-which platform
-pshCliInstalled=$?
+which platform && pshCliInstalled=0 || pshCliInstalled=1
 
 if (( 0 != pshCliInstalled )); then
 	printf "\n%bWe don't have the psh cli tool installed so I'll need to do that real quick...%b\n"
@@ -40,8 +40,8 @@ fi
 defaultBranch=$(platform p:info default_branch)
 #ok, should we check on our integration yet, or just always pull from platform <default-branch>?
 #make sure this branch is up-to-date with default
-git pull platform "${defaultBranch}"
-gitPull=$?
+git pull platform "${defaultBranch}" && gitPull=0 || gitPull=1
+
 if (( 0 != gitPull )); then
 	printf "%bMerge Conflict when trying to update from %s!!!%b\n" "${CWARN}" "${defaultBranch}" "${CRESET}"
 	printf "%sThere was a merge conflict or other failure when trying to update this branch" "${CINFO}"
@@ -52,8 +52,7 @@ else
 fi
 
 printf "%bRunning composer update...%b" "${CWORKING}" "${CRESET}"
-composer update
-composerUpdated=$?
+composer update && composerUpdated=0 || composerUpdated=1
 
 if (( 0 != composerUpdated )); then
 	printf "\n%bComposer Update Failed!%b\n" "${CWARN}" "${CRESET}"
