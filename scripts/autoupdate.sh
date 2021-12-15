@@ -128,10 +128,17 @@ authHead="Authorization: token ${GITHUB_TOKEN}"
 authAccept="Accept: application/vnd.github.v3+json"
 title="Auto-update from Project source operations"
 data="'{\"head\":\"${updateBranch}\",\"base\":\"${defaultBranch}\",\"title\":\"${title}\"}'"
-prCreated=$(curl -s -X POST -H "${authHead}" -H "${authAccept}" "${gitRepoAPILocation}/pulls" -d "${data}")
+prCreated=$(curl -s -D headers.txt -X POST -H "${authHead}" -H "${authAccept}" "${gitRepoAPILocation}/pulls" -d "${data}")
 
+#parse the headers.txt file and make sure we received a 201 Created response
+printf "Contents of the headers file:"
+cat headers.txt
+#ok, prCreated should be a json object where we can extract `number` and `url` to give back to the user
+prURL=$(echo "${prCreated}" | jq -r '.url')
+prNumber=$(echo "${prCreated}" | jq -r '.number')
 
+printf "\n%bPR %d was created and is viewable at %b%s%b.\n" "${CINFO}" "${prNumber}" "${CBOLD}" "${prURL}" "${CRESET}"
 
-
+printf "%bDone.%b" "${CBOLD}" "${CRESET}"
 # Steps for creating an auto-merge PR
 # 1. get the default branch for the repository. We can get that with either the
