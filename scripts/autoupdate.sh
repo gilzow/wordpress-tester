@@ -33,6 +33,7 @@ which platform && pshCliInstalled=0 || pshCliInstalled=1
 if (( 0 != pshCliInstalled )); then
 	printf "\n%bWe don't have the psh cli tool installed so I'll need to do that real quick...%b\n"
 	curl -fsS https://platform.sh/cli/installer | php
+	source ~/.environment
 else
 	printf " %bYep!%b\n" "${CBOLD}" "${CRESET}"
 fi
