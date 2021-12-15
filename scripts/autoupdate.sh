@@ -6,8 +6,8 @@ set -e
 # color used for general working notices (ie "installing foobar..."
 CWORKING='\033[34;1m'
 #The 'color' we use to reset the colors
-#CRESET='\033[0m'
-CRESET=$(tput sgr0 -T "${TERM}")
+CRESET='\033[0m'
+#CRESET=$(tput sgr0 -T "${TERM}")
 #bold, duh
 CBOLD='\033[1;96m'
 #color we use for informational messages
