@@ -2,12 +2,15 @@
 #!/usr/bin/env bash
 set -e
 echo "beginning auto-update check"
-echo "Can we install the GH cli tool?"
+echo "Can we install the psh cli tool?"
+curl -fsS https://platform.sh/cli/installer | php
 
-curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-apt update
-apt install gh
+#curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+#echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+#apt update
+#apt install gh
+
+
 
 updateBranch="auto-updates"
 echo "how about just git status?"
@@ -66,3 +69,6 @@ if [[ -n "${updates}" ]]; then
 
 #  git push "${remote}" "${updateBranch}"
 fi
+
+# Steps for creating an auto-merge PR
+# 1. get the default branch for the repository. We can get that with either the
