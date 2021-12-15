@@ -4711,7 +4711,7 @@
   "prefer-stable": false,
   "prefer-lowest": false,
   "platform": {
-	"php": ">=5.8.20"
+	"php": ">=5.6.20"
   },
   "platform-dev": [],
   "plugin-api-version": "2.0.0"
