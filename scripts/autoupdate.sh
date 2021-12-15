@@ -13,7 +13,9 @@ CBOLD='\033[1;96m'
 CINFO='\033[1;33m'
 #color we use for warnings
 CWARN='\033[1;31m'
-echo "beginning auto-update check"
+printf "%sBeginning auto-update process... %b" "${CWORKING}" "${CRESET}"
+echo "dumping envs"
+printenv
 # not really sure if we'll need this or not since
 updateBranch="auto-updates"
 
