@@ -21,7 +21,7 @@ updateBranch="auto-updates"
 if [[ -z ${PLATFORmSH_CLI_TOKEN+x} ]]; then
 	printf "%bPlatform CLI Token environmental variable missing!%b\n" "${CWARN}" "${CRESET}"
 	printf "%bIn order to perform an auto-update, a valid %bPLATFORMSH_CLI_TOKEN%b %btoken must be created" "${CINFO}" "${CBOLD}" "${CRESET}" "${CINFO}"
-	printf " and accessible in this source operations environment. Please create the variable and try the source operation again.%b" "${CRESET}"
+	printf " and accessible in this source \noperations environment. Please create the variable and try the source operation again. %b" "${CRESET}"
 	exit 1
 fi
 
