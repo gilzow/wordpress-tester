@@ -2,6 +2,13 @@
 #!/usr/bin/env bash
 set -e
 echo "beginning auto-update check"
+echo "Can we install the GH cli tool?"
+
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update
+sudo apt install gh
+
 updateBranch="auto-updates"
 echo "how about just git status?"
 git status
@@ -55,7 +62,7 @@ updates=$(git status --porcelain=1)
 # If we had updates, add the updated composer.lock and commit it
 if [[ -n "${updates}" ]]; then
 	git add composer.lock
-	git commit -m "Auto updates"
+	git commit -m "Source Ops Auto-updates"
 
 #  git push "${remote}" "${updateBranch}"
 fi
