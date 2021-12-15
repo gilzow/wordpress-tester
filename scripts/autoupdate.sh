@@ -13,14 +13,13 @@ CBOLD='\033[1;96m'
 CINFO='\033[1;33m'
 #color we use for warnings
 CWARN='\033[1;31m'
-printf "%sBeginning auto-update process... %b" "${CWORKING}" "${CRESET}"
-echo "dumping envs"
-printenv
 # not really sure if we'll need this or not since
-updateBranch="auto-updates"
+#updateBranch="auto-updates"
+updateBranch="add-source-ops"
+printf "%bBeginning auto-update process... %b" "${CWORKING}" "${CRESET}"
 
 #if we dont have the PLATFORMSH_CLI_TOKEN available, then there's not much we can do
-if [[ -z ${PLATFORmSH_CLI_TOKEN+x} ]]; then
+if [[ -z ${PLATFORMSH_CLI_TOKEN+x} ]]; then
 	printf "%bPlatform CLI Token environmental variable missing!%b\n" "${CWARN}" "${CRESET}"
 	printf "%bIn order to perform an auto-update, a valid %bPLATFORMSH_CLI_TOKEN%b %btoken must be created" "${CINFO}" "${CBOLD}" "${CRESET}" "${CINFO}"
 	printf " and accessible in this source \noperations environment. Please create the variable and try the source operation again. %b" "${CRESET}"
@@ -111,6 +110,8 @@ manualPRLocation="${baseURL}${projectLocation}/compare/${defaultBranch}...${upda
 
 # now that we know we have a github integration, we need to see if we have a github token.
 # @todo this will need to be expanded to check for a _generic_ git api token that we can then map to the specific integration
+# @todo there is an env var COMPOSER_AUTH that has a prop `password` that contains the token used for the integration.
+# I guess we could fail to using it?
 if [[ -z ${GITHUB_TOKEN+x} ]]; then
 	printf "%bGithub token missing!%b\n" "${CWARN}" "${CRESET}"
 	printf "%bIn order to create a pull/merge request for this update, a valid %bGITHUB_TOKEN%b %btoken must be created" "${CINFO}" "${CBOLD}" "${CRESET}" "${CINFO}"
