@@ -41,21 +41,21 @@ fi
 defaultBranch=$(platform p:info default_branch)
 #ok, should we check on our integration yet, or just always pull from platform <default-branch>?
 #make sure this branch is up-to-date with default
-# ok, it would appear that there are ZERO remotes defined, so a pull fails. Guess we'll just 
+# ok, it would appear that there are ZERO remotes defined, so a pull fails. Guess we'll just
 #git pull platform "${defaultBranch}" && gitPull=0 || gitPull=1
 
 
 # since we have no remotes, we'll _have_ to assume that the repo
 
-if (( 0 != gitPull )); then
-	printf "%bMerge Conflict when trying to update from %s!!!%b\n" "${CWARN}" "${defaultBranch}" "${CRESET}"
-	printf "%bThere was a merge conflict or other failure when trying to update this branch" "${CINFO}"
-	printf " with %b%s%b%b. You will need to perform the update locally.%b"  "${CBOLD}" "${defaultBranch}" "${CRESET}" "${CINFO}" "${CRESET}"
-	git status
-	exit 1
-else
-	printf "%bUpdating this branch with %b%s%b%b complete. Continuing.%b\n" "${CINFO}" "${CBOLD}" "${defaultBranch}" "${CRESET}" "${CINFO}" "${CRESET}"
-fi
+#if (( 0 != gitPull )); then
+#	printf "%bMerge Conflict when trying to update from %s!!!%b\n" "${CWARN}" "${defaultBranch}" "${CRESET}"
+#	printf "%bThere was a merge conflict or other failure when trying to update this branch" "${CINFO}"
+#	printf " with %b%s%b%b. You will need to perform the update locally.%b"  "${CBOLD}" "${defaultBranch}" "${CRESET}" "${CINFO}" "${CRESET}"
+#	git status
+#	exit 1
+#else
+#	printf "%bUpdating this branch with %b%s%b%b complete. Continuing.%b\n" "${CINFO}" "${CBOLD}" "${defaultBranch}" "${CRESET}" "${CINFO}" "${CRESET}"
+#fi
 
 printf "%bRunning composer update...%b" "${CWORKING}" "${CRESET}"
 composer update && composerUpdated=0 || composerUpdated=1
@@ -81,16 +81,16 @@ else
 fi
 
 #NOW we need to see if they have an integration...
-integrations=$(platform integrations --columns=ID,type --no-header --format=csv)
+#integrations=$(platform integrations --columns=ID,type --no-header --format=csv)
 # @todo this is nowhere near complete. We need to be able to support multiple types of integrations.
 # @todo what do we do if there is more than one git integration?
-while IFS=, read -r id type; do
-	if [[ "github" == "${type }" ]]; then
-		integrationID="${id}"
-		#yes, this looks weird, but eventually we'll be looking for any of X types
-		integrationType="${type}"
-	fi
-done < <(echo "${integrations}")
+#while IFS=, read -r id type; do
+#	if [[ "github" == "${type }" ]]; then
+#		integrationID="${id}"
+#		#yes, this looks weird, but eventually we'll be looking for any of X types
+#		integrationType="${type}"
+#	fi
+#done < <(echo "${integrations}")
 
 if [[ -z ${integrationID+x} ]]; then
 	# we didnt find a valid integration so we'll have to assume they don't have one. So... that's it.
