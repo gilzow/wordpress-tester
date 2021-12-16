@@ -41,10 +41,9 @@ fi
 defaultBranch=$(platform p:info default_branch)
 #ok, should we check on our integration yet, or just always pull from platform <default-branch>?
 #make sure this branch is up-to-date with default
-# ok, it would appear that there are ZERO remotes defined, so a pull fails
+# ok, it would appear that there are ZERO remotes defined, so a pull fails. Guess we'll just 
 #git pull platform "${defaultBranch}" && gitPull=0 || gitPull=1
-printf "ok, do we have ANY remotes? At all?! \n"
-git remote -v
+
 
 # since we have no remotes, we'll _have_ to assume that the repo
 
@@ -55,7 +54,7 @@ if (( 0 != gitPull )); then
 	git status
 	exit 1
 else
-	printf "%sUpdating this branch with %b%s%b%b complete. Continuing.%b\n" "${CINFO}" "${CBOLD}" "${defaultBranch}" "${CRESET}" "${CINFO}" "${CRESET}"
+	printf "%bUpdating this branch with %b%s%b%b complete. Continuing.%b\n" "${CINFO}" "${CBOLD}" "${defaultBranch}" "${CRESET}" "${CINFO}" "${CRESET}"
 fi
 
 printf "%bRunning composer update...%b" "${CWORKING}" "${CRESET}"
@@ -63,10 +62,10 @@ composer update && composerUpdated=0 || composerUpdated=1
 
 if (( 0 != composerUpdated )); then
 	printf "\n%bComposer Update Failed!%b\n" "${CWARN}" "${CRESET}"
-	printf "%sSomething caused composer to fail during the update. Please see the log above for more details.%s\n" "${CINFO}" "${CRESET}"
+	printf "%bSomething caused composer to fail during the update. Please see the log above for more details.%b\n" "${CINFO}" "${CRESET}"
 	exit 1
 else
-	printf " %sComplete.%b\n" "${CBOLD}" "${CRESET}"
+	printf " %bComplete.%b\n" "${CBOLD}" "${CRESET}"
 fi
 
 updates=$(git status --porcelain=1)
