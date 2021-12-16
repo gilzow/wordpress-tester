@@ -41,12 +41,18 @@ fi
 defaultBranch=$(platform p:info default_branch)
 #ok, should we check on our integration yet, or just always pull from platform <default-branch>?
 #make sure this branch is up-to-date with default
-git pull platform "${defaultBranch}" && gitPull=0 || gitPull=1
+# ok, it would appear that there are ZERO remotes defined, so a pull fails
+#git pull platform "${defaultBranch}" && gitPull=0 || gitPull=1
+printf "ok, do we have ANY remotes? At all?! \n"
+git remote -v
+
+# since we have no remotes, we'll _have_ to assume that the repo
 
 if (( 0 != gitPull )); then
 	printf "%bMerge Conflict when trying to update from %s!!!%b\n" "${CWARN}" "${defaultBranch}" "${CRESET}"
-	printf "%sThere was a merge conflict or other failure when trying to update this branch" "${CINFO}"
+	printf "%bThere was a merge conflict or other failure when trying to update this branch" "${CINFO}"
 	printf " with %b%s%b%b. You will need to perform the update locally.%b"  "${CBOLD}" "${defaultBranch}" "${CRESET}" "${CINFO}" "${CRESET}"
+	git status
 	exit 1
 else
 	printf "%sUpdating this branch with %b%s%b%b complete. Continuing.%b\n" "${CINFO}" "${CBOLD}" "${defaultBranch}" "${CRESET}" "${CINFO}" "${CRESET}"
