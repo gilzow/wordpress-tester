@@ -49,9 +49,13 @@ def main():
 	appPath = os.getenv('PLATFORM_APP_DIR')
 	logging.info("Our app directory: {}".format(appPath))
 	# grab the list of files in the app root
+	testFiles = [file for file in os.listdir(appPath) if os.path.isfile(file)]
+	logging.info("Our list of files from the app directory")
+	pprint(testFiles)
 	# @todo for now this only supports single apps. we'll need to build in multiapp support
 	appfiles = [file for file in os.listdir(appPath) if os.path.isfile(file) and file in updaters.keys()]
-
+	logging.info("That same list of files if we try to filter out only those that have a match")
+	pprint(appfiles)
 	# we only want our updaters that we found in in the appPath
 	# @todo can't we combine this with the above to `if os.path.isfile(file) and file in updaters.keys()` ?
 	#updateFiles = [value for value in updaters if value in appfiles]
