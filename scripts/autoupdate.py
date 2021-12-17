@@ -8,7 +8,7 @@ import subprocess
 
 CWORKING = '\033[34;1m'
 # The 'color' we use to reset the colors
-CRESET = '\033[0m'
+CRESET = '\033[0m\033[K'
 # CRESET=$(tput sgr0 -T "${TERM}")
 # bold, duh
 CBOLD = '\033[1;96m'
@@ -47,10 +47,12 @@ def main():
 	logging.info("Beginning update process...")
 	# get the path to our app
 	appPath = os.getenv('PLATFORM_APP_DIR')
+	logging.info("Our app directory: {}".format(appPath))
 	# grab the list of files in the app root
 	# @todo for now this only supports single apps. we'll need to build in multiapp support
 	appfiles = [file for file in os.listdir(appPath) if os.path.isfile(file)]
 	# we only want our updaters that we found in in the appPath
+	# @todo can't we combine this with the above to `if os.path.isfile(file) and file in updaters.keys()` ?
 	updateFiles = [value for value in updaters if value in appfiles]
 
 	if 1 > len(updateFiles):
