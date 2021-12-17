@@ -46,7 +46,8 @@ def main():
 
 	logging.info("Beginning update process...")
 	# get the path to our app
-	appPath = os.getenv('PLATFORM_APP_DIR')
+	#appPath = os.getenv('PLATFORM_APP_DIR')
+	appPath = '.'
 	logging.info("Our app directory: {}".format(appPath))
 	# grab the list of files in the app root
 	testFiles = [file for file in os.listdir(appPath) if os.path.isfile(file)]
