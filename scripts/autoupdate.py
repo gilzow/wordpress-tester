@@ -8,6 +8,7 @@ import subprocess
 
 CWORKING = '\033[34;1m'
 # The 'color' we use to reset the colors
+# @todo for some reason this is NOT resetting the colors after use
 CRESET = '\033[0m\033[K'
 # CRESET=$(tput sgr0 -T "${TERM}")
 # bold, duh
@@ -22,7 +23,7 @@ logging.addLevelName(logging.ERROR, "%s%s%s" % (CWARN, logging.getLevelName(logg
 
 
 def outputError(cmd, output):
-	logging.warning("{}{}{}{} command failed!".format(CBOLD, cmd, CRESET, CWARN))
+	logging.warning("{}{}{}{} command failed!{}".format(CBOLD, cmd, CRESET, CWARN,CRESET))
 	logging.info("See the following output:")
 	logging.info(output)
 	# @todo exit seems... dirty?
@@ -45,24 +46,12 @@ def main():
 	}
 
 	logging.info("Beginning update process...")
-	# get the path to our app
-	#appPath = os.getenv('PLATFORM_APP_DIR')
-	appPath = '.'
-	logging.info("OutPut from printenv")
-	procEnvVar = subprocess.Popen('printenv',shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
-	output, error = procEnvVar.communicate()
-	pprint(output)
+	# get the path to our app. yes, it's different. in a source op container, we're in a different location
+	appPath = os.getenv('PLATFORM_SOURCE_DIR')
+
 	# grab the list of files in the app root
-	testFiles = [file for file in os.listdir(appPath) if os.path.isfile(file)]
-	logging.info("Our list of files from the app directory")
-	pprint(testFiles)
 	# @todo for now this only supports single apps. we'll need to build in multiapp support
 	appfiles = [file for file in os.listdir(appPath) if os.path.isfile(file) and file in updaters.keys()]
-	logging.info("That same list of files if we try to filter out only those that have a match")
-	pprint(appfiles)
-	# we only want our updaters that we found in in the appPath
-	# @todo can't we combine this with the above to `if os.path.isfile(file) and file in updaters.keys()` ?
-	#updateFiles = [value for value in updaters if value in appfiles]
 
 	if 1 > len(appfiles):
 		return outputError('Gathering dependency definition file(s)',
@@ -70,14 +59,11 @@ def main():
 
 	actions = {}
 	doCommit = False
-	"""
-	If this were php, I could do an array_flip on updateFiles to use the values as the key and then an array_merge with
-	that array and updaters to get a sublist of updaters where the two match. Not sure how to do it here.
-	"""
+
 	for file in appfiles:
 		# @todo just to be safe, we should check to see if updaters has an entry for the file name before we use it
 		actions[file] = updaters[file]
-		# @todo later this needs to be updated to the *relative* directory location where we find the file
+		# @todo later this needs to be updated to the *relative* directory location where we find the file(s)
 		actions[file]['path'] = './'
 
 	for file, action in actions.items():
