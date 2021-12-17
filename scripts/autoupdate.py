@@ -26,8 +26,9 @@ def outputError(cmd, output):
 	logging.info("See the following output:")
 	logging.info(output)
 	# @todo exit seems... dirty?
-	#sys.exit("See previous error above")
+	# sys.exit("See previous error above")
 	return False
+
 
 def main():
 	"""
@@ -43,35 +44,42 @@ def main():
 		'yarn.lock': {'command': 'yarn upgrade', 'lock': ''}
 	}
 
-	# pprint(updaters)
-	# get the app to our app
+	logging.info("Beginning update process...")
+	# get the path to our app
 	appPath = os.getenv('PLATFORM_APP_DIR')
 	# grab the list of files in the app root
 	# @todo for now this only supports single apps. we'll need to build in multiapp support
 	appfiles = [file for file in os.listdir(appPath) if os.path.isfile(file)]
-
+	# we only want our updaters that we found in in the appPath
 	updateFiles = [value for value in updaters if value in appfiles]
 
-	actions = []
+	if 1 > len(updateFiles):
+		return outputError('Gathering dependency definition file(s)',
+						   "I was unable to locate any dependency definition files")
+
+	actions = {}
 	doCommit = False
+	"""
+	If this were php, I could do an array_flip on updateFiles to use the values as the key and then an array_merge with
+	that array and updaters to get a sublist of updaters where the two match. Not sure how to do it here.
+	"""
 	for file in updateFiles:
-		action = updaters[file]
+		actions[file] = updaters[file]
 		# @todo later this needs to be updated to the *relative* directory location where we find the file
-		action['path'] = './'
-		actions += [action]
+		actions[file]['path'] = './'
 
-	logging.info("Beginning update process...")
-
-	for action in actions:
+	for file, action in actions.items():
+		logging.info("Found a {} file...".format(file))
 		logging.info("Running {}".format(action['command']))
 		# run the update process
 		procUpdate = subprocess.Popen(action['command'], shell=True, cwd=action['path'], stdout=subprocess.PIPE,
 									  stderr=subprocess.PIPE)
 		output, error = procUpdate.communicate()
 		if 0 != procUpdate.returncode:
-			outputError(action['command'],error)
+			outputError(action['command'], error)
 		# now let's see if we have updates
 		output = error = None
+		logging.info("Seeing if there are any updates to commit.")
 		procStatus = subprocess.Popen('git status --porcelain=1', shell=True, cwd=appPath, stdout=subprocess.PIPE,
 									  stderr=subprocess.PIPE)
 		output, error = procStatus.communicate()
@@ -83,27 +91,30 @@ def main():
 
 		# one more, just need to add the file
 		output = error = None
+		logging.info("Updates are available, adding {}...".format(file))
 		procAdd = subprocess.Popen('git add {}{}'.format(action['path'], action['lock']), shell=True, cwd=appPath,
 								   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-		output, error = procAdd.communitcate()
+		output, error = procAdd.communicate()
 		if 0 != procAdd.returncode:
 			return outputError('git add', error)
 		else:
 			output = error = None
-			doCommit=True
+			doCommit = True
 
 	if doCommit:
 		# @todo should this message be configurable?
-		message="Auto dependency updates via source operation"
-		cmd='composer commit -m "{}"'.format(message)
-		procCommit=subprocess.Popen(cmd, shell=True, cwd=appPath, stdout=subprocess.PIPE,
+		message = "Auto dependency updates via source operation"
+		cmd = 'git commit -m "{}"'.format(message)
+		procCommit = subprocess.Popen(cmd, shell=True, cwd=appPath, stdout=subprocess.PIPE,
 									  stderr=subprocess.PIPE)
 		output, error = procCommit.communicate()
 
 		if 0 != procCommit.returncode:
 			return outputError('git commit', error)
 		else:
-			return true
+			logging.info("Changes successfully committed.")
+			return True
+
 
 if __name__ == '__main__':
 	main()
