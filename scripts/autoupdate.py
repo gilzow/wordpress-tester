@@ -50,12 +50,13 @@ def main():
 	logging.info("Our app directory: {}".format(appPath))
 	# grab the list of files in the app root
 	# @todo for now this only supports single apps. we'll need to build in multiapp support
-	appfiles = [file for file in os.listdir(appPath) if os.path.isfile(file)]
+	appfiles = [file for file in os.listdir(appPath) if os.path.isfile(file) and file in updaters.keys()]
+
 	# we only want our updaters that we found in in the appPath
 	# @todo can't we combine this with the above to `if os.path.isfile(file) and file in updaters.keys()` ?
-	updateFiles = [value for value in updaters if value in appfiles]
+	#updateFiles = [value for value in updaters if value in appfiles]
 
-	if 1 > len(updateFiles):
+	if 1 > len(appfiles):
 		return outputError('Gathering dependency definition file(s)',
 						   "I was unable to locate any dependency definition files")
 
@@ -65,7 +66,8 @@ def main():
 	If this were php, I could do an array_flip on updateFiles to use the values as the key and then an array_merge with
 	that array and updaters to get a sublist of updaters where the two match. Not sure how to do it here.
 	"""
-	for file in updateFiles:
+	for file in appfiles:
+		# @todo just to be safe, we should check to see if updaters has an entry for the file name before we use it
 		actions[file] = updaters[file]
 		# @todo later this needs to be updated to the *relative* directory location where we find the file
 		actions[file]['path'] = './'
