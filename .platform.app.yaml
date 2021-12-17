@@ -77,4 +77,4 @@ source:
   operations:
     auto-update:
       command: |
-        bash scripts/autoupdate.sh
+        python scripts/autoupdate.py
