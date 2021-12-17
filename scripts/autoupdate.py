@@ -48,7 +48,10 @@ def main():
 	# get the path to our app
 	#appPath = os.getenv('PLATFORM_APP_DIR')
 	appPath = '.'
-	logging.info("Our app directory: {}".format(appPath))
+	logging.info("OutPut from printenv")
+	procEnvVar = subprocess.Popen('printenv',shell=True, stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+	output, error = procEnvVar.communicate()
+	pprint(output)
 	# grab the list of files in the app root
 	testFiles = [file for file in os.listdir(appPath) if os.path.isfile(file)]
 	logging.info("Our list of files from the app directory")
