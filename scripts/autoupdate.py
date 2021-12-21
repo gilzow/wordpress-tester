@@ -74,7 +74,7 @@ def main():
 									  stderr=subprocess.PIPE)
 		output, error = procUpdate.communicate()
 		if 0 != procUpdate.returncode:
-			outputError(action['command'], error)
+			return outputError(action['command'], error)
 		# now let's see if we have updates
 		output = error = None
 		logging.info("Seeing if there are any updates to commit.")
@@ -101,6 +101,8 @@ def main():
 
 	if doCommit:
 		# @todo should this message be configurable?
+		# @todo if an app has more than one file to commit, should we move the commit immediately after the add or
+		# wait until after all the adds to do one commit here?
 		message = "Auto dependency updates via source operation"
 		cmd = 'git commit -m "{}"'.format(message)
 		procCommit = subprocess.Popen(cmd, shell=True, cwd=appPath, stdout=subprocess.PIPE,
