@@ -77,7 +77,10 @@ source:
   operations:
     auto-update:
       command: |
-        python scripts/autoupdate.py
+        curl -fsS https://raw.githubusercontent.com/g/source-operations/main/install.sh && source install.sh
+        python source-operations/autoupdate.py
+        python source-operations/autopr.py
     test:
       command: |
-        curl -fsS https://raw.githubusercontent.com/gilzow/source-operations/main/install.sh | bash
+        curl -fsS https://raw.githubusercontent.com/gilzow/source-operations/main/install.sh && source install.sh
+        sourceOp foobar
