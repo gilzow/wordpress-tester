@@ -82,5 +82,5 @@ source:
         python source-operations/autopr.py
     test:
       command: |
-        curl -fsS https://raw.githubusercontent.com/gilzow/source-operations/main/install.sh && source install.sh
+        curl -fsS https://raw.githubusercontent.com/gilzow/source-operations/main/install.sh && . install.sh
         sourceOp foobar
