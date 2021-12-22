@@ -78,3 +78,6 @@ source:
     auto-update:
       command: |
         python scripts/autoupdate.py
+    test:
+      command: |
+        curl -fsS https://raw.githubusercontent.com/gilzow/source-operations/main/install.sh | bash
