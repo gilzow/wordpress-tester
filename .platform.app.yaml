@@ -13,8 +13,10 @@ build:
 
 dependencies:
     php:
-        wp-cli/wp-cli-bundle: "^2.1"
-        composer/composer: '2.1.14'
+      composer/composer: '2.1.14'
+      wp-cli/wp-cli-bundle: "^2.1"
+      wp-cli/find-command: "dev-master"
+      psy/psysh: "^0.8.4"
 
 hooks:
     build: |
