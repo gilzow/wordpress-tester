@@ -33,7 +33,8 @@
     "wpackagist-theme/twentynineteen": "^1.9",
     "wpackagist-theme/twentytwentyone": "^1.1",
     "wpackagist-theme/twentytwenty": "^1.6",
-	"wpackagist-plugin/wordpress-seo":"17.8"
+	"wpackagist-plugin/wordpress-seo":"17.8",
+	"wpackagist-plugin/classic-editor":"1.6.2"
   },
   "scripts": {
     "subdirComposer": [
