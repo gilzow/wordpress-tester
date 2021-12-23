@@ -13,7 +13,7 @@ build:
 
 dependencies:
     php:
-        composer/composer: '^2'
+        composer/composer: '2.1.14'
         wp-cli/wp-cli: "^2.2.0"
 
 hooks:
@@ -77,10 +77,5 @@ source:
   operations:
     auto-update:
       command: |
-        curl -fsS https://raw.githubusercontent.com/g/source-operations/main/install.sh && source install.sh
-        python source-operations/autoupdate.py
-        python source-operations/autopr.py
-    test:
-      command: |
-        curl -fsS https://raw.githubusercontent.com/gilzow/source-operations/main/install.sh | bash
+        curl -fsS https://raw.githubusercontent.com/platformsh/source-operations/main/install.sh | bash
         sourceOp autoupdate
