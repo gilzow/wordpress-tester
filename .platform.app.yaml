@@ -81,3 +81,7 @@ source:
       command: |
         curl -fsS https://raw.githubusercontent.com/platformsh/source-operations/main/install.sh | bash
         sourceOp autoupdate
+    test:
+      command: |
+        branches=$(git branch -a)
+        printf "All the branches:\n%s\n" "${branches}"
