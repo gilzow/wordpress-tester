@@ -15,7 +15,7 @@ dependencies:
     php:
       composer/composer: '^2'
       wp-cli/wp-cli-bundle: "^2.1"
-      wp-cli/find-command: "dev-master"
+      # wp-cli/find-command: "dev-master"
       psy/psysh: "^0.8.4"
 
 hooks:
@@ -79,5 +79,6 @@ source:
   operations:
     auto-update:
       command: |
-        curl -fsS https://raw.githubusercontent.com/platformsh/source-operations/main/install.sh | bash
-        sourceOp autoupdate
+        # dash is the default sh and <( is a bashism, so we have to execute the line in bash, so we can send output
+        # from curl to bash. my head hurts.
+        bash -c "bash <(curl -fsS https://raw.githubusercontent.com/gilzow/source-operations/main/setup.sh) sop-autoupdate"
