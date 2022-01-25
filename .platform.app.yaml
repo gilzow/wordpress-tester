@@ -24,6 +24,9 @@ hooks:
         # Copy manually-provided plugins into the plugins directory.
         # This allows manually-provided and composer-provided plugins to coexist.
         rsync -a plugins/* wordpress/wp-content/plugins/
+        bash scripts/stage.sh build
+    deploy: |
+      bash scripts/stage.sh deploy
 
 # The relationships of the application with services or other applications.
 # The left-hand side is the name of the relationship as it will be exposed
@@ -82,3 +85,5 @@ source:
         # dash is the default sh and <( is a bashism, so we have to execute the line in bash, so we can send output
         # from curl to bash. my head hurts.
         bash -c "bash <(curl -fsS https://raw.githubusercontent.com/gilzow/source-operations/main/setup.sh) sop-autoupdate"
+    test:
+      command: bash scripts/stage.sh sourceop
