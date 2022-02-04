@@ -52,4 +52,4 @@ jobs:
           #we dont need the whole response (yet), just see if we get a 200
           response=$(curl -s -o /dev/null -I -w "%{http_code}" "${target_url//http:/https:}");
           echo "::notice::Response from server for our PR environment is ${response}"
-
+          # fake comment
