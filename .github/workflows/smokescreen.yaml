@@ -13,22 +13,33 @@ jobs:
     name: Test the PR environment
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for platformsh check to succeed
-        id: wait4psh
-        uses: lewagon/wait-on-check-action@v1.0.0
-        with:
-          ref: ${{ github.ref }}
-          running-workflow-name: 'platformsh'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
+      #- name: Wait for platformsh check to succeed
+        #id: wait4psh
+        #uses: lewagon/wait-on-check-action@v1.0.0
+        #with:
+          #ref: ${{ github.ref }}
+          #running-workflow-name: 'platformsh'
+          #repo-token: ${{ secrets.GITHUB_TOKEN }}
+          #wait-interval: 10
       - name: Did psh finish?
-        if: steps.wait4psh.outputs.status == 'success'
+        #if: steps.wait4psh.outputs.status == 'success'
         run: |
-          echo "::notice::Did psh pr env deploy?!"
-          echo "::notice::I'm guessing so because these messages are happening!"
+          echo "::notice::Checking if PR environment has deployed..."
+
           echo "git.ref is ${{ github.ref }}"
           #gh api /repos/gilzow/wordpress-tester/commits/9dfc62f/statuses | jq -r 'map(select(.state | contains("success"))) | .[] .target_url'
-          target_url=$(gh api /repos/${{ github.repository_owner }}/commits/${{ github.ref }}/statuses | jq -r 'map(select(.state | contains("success"))) | .[] .target_url' )
+          #target_url=$(gh api /repos/${{ github.repository_owner }}/commits/${{ github.ref }}/statuses | jq -r 'map(select(.state | contains("success"))) | .[] .target_url' )
+
+          counter=0
+          cutoff=30
+          target_url=""
+          printf "checking if Pr environment is deployed."
+          while (( counter < cutoff )) && [[ -z "${target_url}" ]]; do
+            sleep 10
+            target_url=$(gh api /repos/${{ github.repository_owner }}/commits/${{ github.ref }}/statuses | jq -r 'map(select(.state | contains("success"))) | .[] .target_url' )
+            printf "."
+          done
+          printf " Deployed!\n"
           echo "::notice::The target url returned from our status: ${target_url}"
           #ok, so for whatever strange reason, our integration returns the http version of the PR environment, not https
           #hence to parameter expansion replacement.
