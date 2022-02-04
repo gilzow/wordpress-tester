@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "::notice::Checking if PR environment has deployed..."
 
-          echo "git.ref is ${{ github.ref }}"
+          echo "git.head_ref is ${{ github.head_ref }}"
           #gh api /repos/gilzow/wordpress-tester/commits/9dfc62f/statuses | jq -r 'map(select(.state | contains("success"))) | .[] .target_url'
           #target_url=$(gh api /repos/${{ github.repository_owner }}/commits/${{ github.ref }}/statuses | jq -r 'map(select(.state | contains("success"))) | .[] .target_url' )
 
@@ -38,7 +38,7 @@ jobs:
           printf "checking if Pr environment is deployed."
           while (( counter < cutoff )) && [[ -z "${target_url}" ]]; do
             sleep 10
-            target_url=$(gh api /repos/${{ github.repository_owner }}/commits/${{ github.ref }}/statuses | jq -r 'map(select(.state | contains("success"))) | .[] .target_url' )
+            target_url=$(gh api /repos/${{ github.repository_owner }}/commits/${{ github.head_ref }}/statuses | jq -r 'map(select(.state | contains("success"))) | .[] .target_url' )
             printf "."
             counter=$((++counter))
           done
