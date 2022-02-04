@@ -23,6 +23,8 @@ jobs:
           #wait-interval: 10
       - name: Did psh finish?
         #if: steps.wait4psh.outputs.status == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           echo "::notice::Checking if PR environment has deployed..."
 
@@ -38,6 +40,7 @@ jobs:
             sleep 10
             target_url=$(gh api /repos/${{ github.repository_owner }}/commits/${{ github.ref }}/statuses | jq -r 'map(select(.state | contains("success"))) | .[] .target_url' )
             printf "."
+            counter=$((++counter))
           done
           printf " Deployed!\n"
           echo "::notice::The target url returned from our status: ${target_url}"
