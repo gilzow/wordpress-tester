@@ -21,32 +21,16 @@ jobs:
           #running-workflow-name: 'platformsh'
           #repo-token: ${{ secrets.GITHUB_TOKEN }}
           #wait-interval: 10
-      - name: Did psh finish?
-        #if: steps.wait4psh.outputs.status == 'success'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: 'Wait for psh and get target url'
+        id: get-target-url
+        uses: gilzow/retrieve-psh-prenv-url@main
+        with:
+           github-token: ${{ secrets.GH_TOKEN }}
+      - name: 'Does Our App Work?'
+        id: smokescreen
         run: |
-          echo "::notice::Checking if PR environment has deployed..."
-
-          echo "git.head_ref is ${{ github.head_ref }}"
-          echo "respository is ${{ github.repository }}"
-          #gh api /repos/gilzow/wordpress-tester/commits/9dfc62f/statuses | jq -r 'map(select(.state | contains("success"))) | .[] .target_url'
-          #target_url=$(gh api /repos/${{ github.repository_owner }}/commits/${{ github.ref }}/statuses | jq -r 'map(select(.state | contains("success"))) | .[] .target_url' )
-
-          counter=0
-          cutoff=30
-          target_url=""
-          printf "checking if Pr environment is deployed."
-          while (( counter < cutoff )) && [[ -z "${target_url}" ]]; do
-            sleep 10
-            statusLocation="/repos/${{ github.repository }}/commits/${{ github.head_ref }}/statuses"
-            printf "I'm gonna check %s for a status...\n" "${statusLocation}"
-            target_url=$(gh api "${statusLocation}" | jq -r 'map(select(.state | contains("success"))) | .[] .target_url' )
-            printf "."
-            counter=$((++counter))
-          done
-          printf " Deployed!\n"
-          echo "::notice::The target url returned from our status: ${target_url}"
+          target_url=${{ steps.get-target-url.outputs.target_url }}
+          echo "::notice::The target url returned from our github action: ${target_url}"
           #ok, so for whatever strange reason, our integration returns the http version of the PR environment, not https
           #hence to parameter expansion replacement.
           #we dont need the whole response (yet), just see if we get a 200
