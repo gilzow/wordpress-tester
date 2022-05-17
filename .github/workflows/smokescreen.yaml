@@ -4,20 +4,36 @@ on:
     workflows: ["platformsh"]
     types:
       - completed
+  pull_request:
+    branches:
+      - main
+
 jobs:
   test-pr-env:
     name: Test the PR environment
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for platformsh check to succeed
-        uses: lewagon/wait-on-check-action@v1.0.0
+      #- name: Wait for platformsh check to succeed
+        #id: wait4psh
+        #uses: lewagon/wait-on-check-action@v1.0.0
+        #with:
+          #ref: ${{ github.ref }}
+          #running-workflow-name: 'platformsh'
+          #repo-token: ${{ secrets.GITHUB_TOKEN }}
+          #wait-interval: 10
+      - name: 'Wait for psh and get target url'
+        id: get-target-url
+        uses: gilzow/retrieve-psh-prenv-url@main
         with:
-          ref: ${{ github.ref }}
-          running-workflow-name: 'platformsh'
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          wait-interval: 10
-      - name: Did psh finish?
-        if: {{ success() }}
+           github-token: ${{ secrets.GH_TOKEN }}
+      - name: 'Does Our App Work?'
+        id: smokescreen
         run: |
-          echo "Did psh pr env deploy?!"
-
+          target_url=${{ steps.get-target-url.outputs.target_url }}
+          echo "::notice::The target url returned from our github action: ${target_url}"
+          #ok, so for whatever strange reason, our integration returns the http version of the PR environment, not https
+          #hence to parameter expansion replacement.
+          #we dont need the whole response (yet), just see if we get a 200
+          response=$(curl -s -o /dev/null -I -w "%{http_code}" "${target_url//http:/https:}");
+          echo "::notice::Response from server for our PR environment is ${response}"
+          # fake comment
