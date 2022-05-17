@@ -14,7 +14,7 @@ build:
 dependencies:
     php:
         composer/composer: '^2'
-        wp-cli/wp-cli: "^2.2.0"
+        wp-cli/wp-cli-bundle: "^2.4.0"
 
 hooks:
     build: |
@@ -72,7 +72,11 @@ mounts:
     "wordpress/wp-content/uploads":
         source: local
         source_path: "uploads"
-
+    deploy:
+      source: service
+      service: files
+      source_path: deploy
+      
 source:
   operations:
     auto-update:
